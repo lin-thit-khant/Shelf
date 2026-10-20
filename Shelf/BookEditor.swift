@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct BookEditor: View {
-    @Binding var book: Book
+    @Bindable var book: Book
     
     var body: some View {
         Form {

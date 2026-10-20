@@ -6,23 +6,32 @@
 //
 
 import Foundation
+import SwiftData
 
-struct Book: Identifiable {
-    let id: UUID
+@Model
+final class Book {
     var title: String
     var author: String
     var status: ReadingStatus
-    let added: Date
+    var added: Date
     var genre: BookGenre?
+    
+    init(title: String, author: String, status: ReadingStatus, added: Date, genre: BookGenre?) {
+        self.title = title
+        self.author = author
+        self.status = status
+        self.added = added
+        self.genre = genre
+    }
 }
 
-enum ReadingStatus {
+enum ReadingStatus: String, Codable, CaseIterable {
     case want
     case reading
     case finished
 }
 
-enum BookGenre {
+enum BookGenre: String, Codable, CaseIterable {
     case romance
     case thriller
     case mystery
@@ -31,7 +40,6 @@ enum BookGenre {
 extension Book {
     static let samples: [Book] = [
         Book(
-            id: UUID(),
             title: "The Salt Market",
             author: "Lena Cho",
             status: .reading,
@@ -39,7 +47,6 @@ extension Book {
             genre: .romance
         ),
         Book(
-            id: UUID(),
             title: "Platform 19",
             author: "Idris Hale",
             status: .want,
@@ -47,7 +54,6 @@ extension Book {
             genre: .mystery
         ),
         Book(
-            id: UUID(),
             title: "Field Notes from June",
             author: "Mara Voss",
             status: .finished,
