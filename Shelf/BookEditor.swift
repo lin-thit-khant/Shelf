@@ -25,7 +25,7 @@ struct BookEditor: View {
                 Text("Thriller").tag(Optional<BookGenre>.some(.thriller))
             }
         }
-        .navigationTitle(book.title)
+        .navigationTitle(book.displayTitle)
     }
 }
 

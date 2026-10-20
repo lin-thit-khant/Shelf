@@ -72,10 +72,12 @@ struct BookList: View {
 
     init(term: String, statusRaw: String) {
         let search = term
-        let wanted = statusRaw
+        let includeEveryStatus = statusRaw == "all"
+        let selectedStatus = ReadingStatus(rawValue: statusRaw) ?? .want
+        
         _books = Query(
             filter: #Predicate<Book> { book in
-                (wanted == "all" || book.status.rawValue == wanted)
+                (includeEveryStatus || book.status == selectedStatus)
                     && (search.isEmpty
                         || book.title.localizedStandardContains(search)
                         || book.author.localizedStandardContains(search))
@@ -90,14 +92,23 @@ struct BookList: View {
                 NavigationLink  {
                     BookEditor(book: book)
                 } label: {
-                    VStack(alignment: .leading) {
-                        Text(book.title)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(book.displayTitle)
+                            .font(.headline)
                         Text(book.author)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                         Text(statusTitle(book.status))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                         if let genre = book.genre {
                             Text(genreTitle(genre))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                         }
                     }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(spokenDescription(for: book))
                 }
             }
         }
@@ -119,9 +130,28 @@ struct BookList: View {
         }
     }
     
+    private func spokenDescription(for book: Book) -> String {
+        let title = book.title.isEmpty ? "Untitled" : book.title
+        var parts = [title]
+        if !book.author.isEmpty {
+            parts.append("by \(book.author)")
+        }
+        parts.append(statusTitle(book.status))
+        if let genre = book.genre {
+            parts.append(genreTitle(genre))
+        }
+        return parts.joined(separator: ", ")
+    }
+    
 }
 
 #Preview {
     ContentView()
         .modelContainer(for: Book.self, inMemory: true)
+}
+
+#Preview("Large Text") {
+    ContentView()
+        .modelContainer(for: Book.self, inMemory: true)
+        .environment(\.dynamicTypeSize, .accessibility3)
 }

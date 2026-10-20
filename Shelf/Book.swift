@@ -15,6 +15,9 @@ final class Book {
     var status: ReadingStatus
     var added: Date
     var genre: BookGenre?
+    var displayTitle: String {
+        title.isEmpty ? "Untitled" : title
+    }
     
     init(title: String, author: String, status: ReadingStatus, added: Date, genre: BookGenre?) {
         self.title = title
