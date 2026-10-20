@@ -8,19 +8,46 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var books = Book.samples
+    
     var body: some View {
-        VStack {
-            List(Book.samples) { book in
-                VStack(alignment: .leading) {
-                    Text(book.title)
-                    Text(book.author)
-                    Text(statusTitle(book.status))
-                    if let genre = book.genre {
-                        Text(genreTitle(genre))
+        NavigationStack {
+            List {
+                ForEach($books) { $book in
+                    NavigationLink {
+                        BookEditor(book: $book)
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(book.title)
+                            Text(book.author)
+                            Text(statusTitle(book.status))
+                            if let genre = book.genre {
+                                Text(genreTitle(genre))
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Shelf")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Add") {
+                        books.append(
+                            Book(
+                                id: UUID(),
+                                title: "",
+                                author: "",
+                                status: .want,
+                                added: Date(),
+                                genre: nil
+                            )
+                        )
                     }
                 }
             }
         }
+        
     }
     
     func statusTitle(_ status: ReadingStatus) -> String {
