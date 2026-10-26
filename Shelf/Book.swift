@@ -18,6 +18,17 @@ final class Book {
     var displayTitle: String {
         title.isEmpty ? "Untitled" : title
     }
+    var spokenDescription: String {
+        var parts = [displayTitle]
+        if !author.isEmpty {
+            parts.append("by \(author)")
+        }
+        parts.append(status.title)
+        if let genre {
+            parts.append(genre.title)
+        }
+        return parts.joined(separator: ", ")
+    }
     
     init(title: String, author: String, status: ReadingStatus, added: Date, genre: BookGenre?) {
         self.title = title
@@ -32,12 +43,28 @@ enum ReadingStatus: String, Codable, CaseIterable {
     case want
     case reading
     case finished
+    
+    var title: String {
+        switch self {
+        case .want: return "Want"
+        case .reading: return "Reading"
+        case .finished: return "Finished"
+        }
+    }
 }
 
 enum BookGenre: String, Codable, CaseIterable {
     case romance
     case thriller
     case mystery
+    
+    var title: String {
+        switch self {
+        case .romance: return "Romance"
+        case .thriller: return "Thriller"
+        case .mystery: return "Mystery"
+        }
+    }
 }
 
 extension Book {

@@ -33,6 +33,11 @@ struct ContentView: View {
                         )
                     }
                 }
+                ToolbarItem(placement: .bottomBar) {
+                    NavigationLink("UIKit") {
+                        BookTableRepresentable(container: modelContext.container)
+                    }
+                }
                 ToolbarItem(placement: .topBarLeading) {
                     Picker("Status", selection: $statusFilter) {
                         Text("All").tag("all")
@@ -98,50 +103,23 @@ struct BookList: View {
                         Text(book.author)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                        Text(statusTitle(book.status))
+                        Text(book.status.title)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         if let genre = book.genre {
-                            Text(genreTitle(genre))
+                            Text(genre.title)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                     }
                     .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(spokenDescription(for: book))
+                    .accessibilityLabel(book.spokenDescription))
                 }
             }
         }
     }
     
-    func statusTitle(_ status: ReadingStatus) -> String {
-        switch status {
-        case .want: return "Want"
-        case .reading: return "Reading"
-        case .finished: return "Finished"
-        }
-    }
-    
-    func genreTitle(_ genre: BookGenre) -> String {
-        switch genre {
-        case .romance: return "Romance"
-        case .mystery: return "Mystery"
-        case .thriller: return "Thriller"
-        }
-    }
-    
-    private func spokenDescription(for book: Book) -> String {
-        let title = book.title.isEmpty ? "Untitled" : book.title
-        var parts = [title]
-        if !book.author.isEmpty {
-            parts.append("by \(book.author)")
-        }
-        parts.append(statusTitle(book.status))
-        if let genre = book.genre {
-            parts.append(genreTitle(genre))
-        }
-        return parts.joined(separator: ", ")
-    }
+   
     
 }
 
